@@ -1,139 +1,260 @@
-local g = vim.g
-local o = vim.o
-local t = vim.opt
-local a = vim.api
+local g   = vim.g
+local o   = vim.o
+local opt = vim.opt
+local A   = vim.api
 
--- Source Plugins
-require 'p_plug'
+opt.relativenumber = true
+o.clipboard = 'unnamedplus'
+o.number = true
+o.mouse= "a"
+o.tabstop = 4 
+o.shiftwidth = 4
+o.expandtab = true
+o.swapfile = false
+o.backup = false
+o.smartindent  = true
+o.autoindent = true
+o.incsearch = true
+o.ignorecase = true
+o.smartcase = true
+o.wrap = false
+o.hidden = true
+o.laststatus = 2
+o.scrolloff = 10
+o.showcmd = true
+o.showmatch = true
 
--- Ale Completion
---g.ale_completion_enabled = true
+o.completeopt = 'menu,menuone,noinsert'
+o.pumheight = 5
+o.cursorline = true
+vim.cmd(":hi Cursorline cterm=NONE ctermbg=236")
 
--- Encoding
-t.encoding = 'utf-8'
-
-----------------YouCompleteMe--------------------
-
--- Start autocompletion after 4 charts
-g.ycm_min_num_of_chars_for_completion = 4
-g.ycm_min_num_identifier_candidate_chars = 4
-g.ycm_enable_diagnostic_highlighting = 0
-
--- Don't show YCM's preview window
---t.completeopt = completeopt - preview
---g.ycm_add_preview_to_completeopt = 0
-
--------------------------------------------------
-
--- Spaces and tabs
-t.smarttab = true
-t.tabstop = 4
-t.expandtab = true
-t.shiftwidth = 4
-
--- Highlight current line
-t.cursorline = true
-
--- Line numbers
-t.number = true
-t.relativenumber = true
-
--- Visual bell
-t.visualbell = true
-
--- NetRW Config
-g.netrw_keepdir = 0
-g.netrw_winsize = 20
-
--- MD Languages
-g.markdown_fenced_languages = {'bash=sh', 'javascript', 'json=javascript', 'typescript', 'html', 'rust', 'css', 'cpp', 'python'}
-
--- Python Interpreter
-g.python3_host_prog = '/usr/bin/python3'
-
+-- KEYBINDINGS
+vim.cmd [[packadd packer.nvim]]
 local function map(m, k, v)
-    vim.keymap.set(m, k, v, {silent = true})
+    vim.keymap.set(m, k, v, { silent = true })
 end
 
--- Leader Key
-g.mapleader = ' '
+-- KEY-REMAPS
+map('n', '<F5>', '<Esc>:!python %<CR>')
 
--- Key [Re]maps
-map('t', '<Esc>', '<C-\\><C-n>')
-map('n', '<A-e>', ':Lexplore<CR>')
-map('n', '<A-t>', ':sp term://bash<CR>i')
-map('n', '<A-[>', ':tabprevious<CR>')
-map('n', '<A-]>', ':tabnext<CR>')
+map('i', '<C-d>', '<Bs>')
+map('i', '<C-h>', '<Left>')
+map('i', '<C-j>', '<Down>')
+map('i', '<C-k>', '<Up>')
+map('i', '<C-l>', '<Right>')
+map('c', '<C-h>', '<Left>')
+map('c', '<C-j>', '<Down>')
+map('c', '<C-k>', '<Up>')
+map('c', '<C-l>', '<Right>')
+map('i', '{<CR>', '{<CR>}<Esc><S-O>')
+map('i', '<S-Tab>', '<Esc><<i')
+map('x', '<Tab>', '>')
+map('x', '<S-Tab>', '<')
+map('x', '"', 'c""<Esc>P')
+map('x', "'", "c''<Esc>P")
+map('x', '(', 'c()<Esc>P')
+map('x', '{', 'c{}<Esc>P')
+map('x', '[', 'c[]<Esc>P')
+map('x', '*', 'c**<Esc>P')
 
--- Telescope Keybinds
-map('n', '<leader>ff', '<cmd>lua require("telescope.builtin").find_files()<cr>')
-map('n', '<leader>fg', '<cmd>lua require("telescope.builtin").live_grep()<cr>')
-map('n', '<leader>fb', '<cmd>lua require("telescope.builtin").buffers()<cr>')
-map('n', '<leader>fh', '<cmd>lua require("telescope.builtin").help_tags()<cr>')
-map('n', '<leader>ft', '<cmd>lua require("telescope.builtin").treesitter()<cr>')
+map('i', '<C-b>', '<Esc>:Lexplore<CR>')
+map('n', '<C-b>', '<Esc>:Lexplore<CR>')
 
-require'nvim-treesitter.configs'.setup {
-  -- One of "all", "maintained" (parsers with maintainers), or a list of languages
-  ensure_installed = {
-    "bash",
-    "c",
-    "cpp",
-    "css",
-    "html",
-    "javascript",
-    "typescript",
-    "python",
-    "rust",
-  },
+-- NETRW CONFIG
+g.netrw_banner = 0
+g.netrw_liststyle = 3
+g.netrw_winsize = 30
+g.netrw_altv = 1
 
-  -- Install languages synchronously (only applied to `ensure_installed`)
-  sync_install = false,
 
-  highlight = {
-    enable = true,
-    additional_vim_regex_highlighting = false,
-  },
-}
+-- PLUGIN CONFIGS AND INITS
+-- ====================================================================
+-- TOOOOKYYYOOO - "ThePrimeagen"
+g.tokynight_transparent_sidebar = true
+g.tokynight_transparent = true
+opt.background = "dark"
+vim.cmd("colorscheme tokyonight")
 
-require("tokyonight").setup({
-  -- your configuration comes here
-  -- or leave it empty to use the default settings
-  style = "night", -- The theme comes in three styles, `storm`, a darker variant `night` and `day`
-  transparent = false, -- Enable this to disable setting the background color
-  terminal_colors = true, -- Configure the colors used when opening a `:terminal` in Neovim
-  styles = {
-    -- Style to be applied to different syntax groups
-    -- Value is any valid attr-list value for `:help nvim_set_hl`
-    comments = { italic = true },
-    keywords = { italic = true },
-    functions = {},
-    variables = {},
-    -- Background styles. Can be "dark", "transparent" or "normal"
-    sidebars = "dark", -- style for sidebars, see below
-    floats = "dark", -- style for floating windows
-  },
-  sidebars = { "qf", "help" }, -- Set a darker background on sidebar-like windows. For example: `["qf", "vista_kind", "terminal", "packer"]`
-  day_brightness = 0.3, -- Adjusts the brightness of the colors of the **Day** style. Number between 0 and 1, from dull to vibrant colors
-  hide_inactive_statusline = false, -- Enabling this option, will hide inactive statuslines and replace them with a thin border instead. Should work with the standard **StatusLine** and **LuaLine**.
-  dim_inactive = false, -- dims inactive windows
-  lualine_bold = false, -- When `true`, section headers in the lualine theme will be bold
+-- DON'T FORGET AFTER INSTALL :: TSInstall html/php/etc... + TSEnable autotag !!
+require('nvim-ts-autotag').setup()
 
-  --- You can override specific color groups to use other groups or a hex color
-  --- fucntion will be called with a ColorScheme table
-  ---@param colors ColorScheme
-  on_colors = function(colors) end,
+-- TELESCOPE FINDER AND IT'S KEY-MAPPING
+require('telescope').setup()
+--nnoremap <leader>ff <cmd>lua require('telescope.builtin').find_files()<cr>
+--nnoremap <leader>fg <cmd>lua require('telescope.builtin').live_grep()<cr>
+--nnoremap <leader>fb <cmd>lua require('telescope.builtin').buffers()<cr>
+--nnoremap <leader>fh <cmd>lua require('telescope.builtin').help_tags()<cr>
 
-  --- You can override specific highlights to use other groups or a hex color
-  --- fucntion will be called with a Highlights and ColorScheme table
-  ---@param highlights Highlights
-  ---@param colors ColorScheme
-  on_highlights = function(highlights, colors) end,
-})
+map('n', '<C-f>f', '<Esc>:Telescope find_files <CR>')
+map('n', '<C-f>g', '<Esc>:Telescope live_grep <CR>')
+map('n', '<C-f>b', '<Esc>:Telescope buffers <CR>')
+map('n', '<C-f>h', '<Esc>:Telescope help_tags <CR>')
 
-vim.cmd[[colorscheme tokyonight]]
+-- Lua line, very nice - "Borat"
+require('lualine').setup{ options = { theme = 'gruvbox' }}
+vim.cmd("set encoding=UTF-8")
 
-require("which-key").setup {
-    -- your configuration comes here
-    -- or leave it empty to use the default settings
-    -- refer to the configuration section below
+-- LSP
+
+-- Block commenting
+require('kommentary.config').use_extended_mappings()
+
+-- SETUP CMP AUTOCOMPLETE
+-- ====================================================================
+
+local cmp = require'cmp'
+  cmp.setup({
+    mapping = cmp.mapping.preset.insert({
+    ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+    ['<C-f>'] = cmp.mapping.scroll_docs(4),
+    ['<C-e>'] = cmp.mapping.close(),
+    ['<c-y>'] = cmp.mapping.confirm({ 
+       behavior = cmp.ConfirmBehavior.Insert,
+       select = true 
+   }), --cmp.confirm, 
+   }), -- mapping,
+    
+   sources = cmp.config.sources({
+      { name = 'gh_issues'},
+      { name = 'nvim_lsp' },
+      { name = 'path'},
+      { name = 'luasnip'},
+      { name = 'buffer', keyword_length = 3},
+      }), --sources
+   
+    snippet = ({
+      expand = function(args)
+       require('luasnip').lsp_expand(args.body)
+     end
+     }), -- snippet
+
+     --[[
+    formatting = ({
+        format = lspkind.cmp_format ({
+            with_text = true,
+            menu = {
+                buffer = '[buf]',
+                nvim_lsp = '[LSP]',
+                nvim_lua = '[api]',
+                path = '[path]',
+                luasnip = '[snip]',
+                gh_issues = '[ussues]',
+            }, -- formating.format.menu
+        }), --formating.format
+    }), -- formating
+    -- ]]
+    experimental = {
+        native_menu = false,
+        ghost_text = true,
+    }, --experimental
+}) -- setup
+
+
+
+local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+--require'lspconfig'.pyright.setup { capabilities = capabilities }
+--require'lspconfig'.eslint.setup { capabilities = capabilities }
+require'lspconfig'.intelephense.setup { capabilities = capabilities }
+
+
+-- WhichKey keybinds setup
+-- wk.register({key1 = {name, more_keys = {cmd, help}}}, predix_key)
+
+local wk = require("which-key")
+wk.register({
+    t = {
+        name = "telescope",
+        f = {"<cmd>lua require('telescope.builtin').find_files()<cr>", "find files"},
+        g = {"<cmd>lua require('telescope.builtin').live_grep()<cr>", "grep"},
+        b = {"<cmd>lua require('telescope.builtin').buffers()<cr>", "buffer list"},
+        h = {"<cmd>lua require('telescope.builtin').help_tags()<cr>", "help tags"},
+        t = {"<cmd>lua require('telescope.builtin').treesitter()<cr>", "treesiter"}
+    },
+    b = {
+        name = "buffer",
+        c = {"<cmd>bdelete<cr>", "delete buffer"},
+        p = {"<cmd>bprevious<cr>", "previous buffer"},
+        n = {"<cmd>bnext<cr>", "next buffer"}
+    }
+}, { prefix = "<leader>" })
+
+
+--[[
+         window = {
+       completion = cmp.config.window.bordered(),
+      -- documentation = cmp.config.window.bordered(),
+    })
+
+  -- Set configuration for specific filetype.
+  cmp.setup.filetype('gitcommit', {
+    sources = cmp.config.sources({
+      { name = 'cmp_git' }, -- You can specify the `cmp_git` source if you were installed it.
+    }, {
+      { name = 'buffer' },
+    })
+  })
+
+  -- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
+  cmp.setup.cmdline('/', {
+    mapping = cmp.mapping.preset.cmdline(),
+    sources = {
+      { name = 'buffer' }
+    }
+  })
+
+  -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+  cmp.setup.cmdline(':', {
+    mapping = cmp.mapping.preset.cmdline(),
+    sources = cmp.config.sources({
+      { name = 'path' }
+    }, {
+      { name = 'cmdline' }
+    })
+  })
+
+  -- Setup lspconfig.
+  local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+  -- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
+  require('lspconfig')['pyright'].setup {
+    capabilities = capabilities
   }
+  --]]
+-- ====================================================================
+
+-- PLUGINS
+return require('packer').startup(function()
+  -- Packer can manage itself
+    use 'wbthomason/packer.nvim'
+    use 'neovim/nvim-lspconfig'
+    use 'onsails/lspkind-nvim'
+    use "lukas-reineke/indent-blankline.nvim"
+    use 'folke/tokyonight.nvim'
+    use {
+      'nvim-lualine/lualine.nvim',
+      requires = { 'kyazdani42/nvim-web-devicons', opt = true }
+    }
+    use 'b3nj5m1n/kommentary'
+    use {
+        'folke/which-key.nvim',
+        config = function() require'which-key'.setup{} end
+    }
+    use 'hrsh7th/cmp-nvim-lua'
+    use 'hrsh7th/cmp-nvim-lsp'
+    use 'hrsh7th/cmp-buffer'
+    use 'hrsh7th/cmp-path'
+    use 'hrsh7th/cmp-cmdline'
+    use 'hrsh7th/nvim-cmp'
+    use 'saadparwaiz1/cmp_luasnip'
+    use {
+        'nvim-treesitter/nvim-treesitter',
+        run = ':TSUpdate'
+    }
+    use 'windwp/nvim-ts-autotag'
+    use {
+      'nvim-telescope/telescope.nvim', tag = '0.1.0',
+    -- or                            , branch = '0.1.x',
+      requires = { {'nvim-lua/plenary.nvim'} }
+    }
+
+end)

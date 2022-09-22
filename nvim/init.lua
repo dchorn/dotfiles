@@ -153,10 +153,9 @@ local cmp = require'cmp'
 
 
 local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
---require'lspconfig'.pyright.setup { capabilities = capabilities }
---require'lspconfig'.eslint.setup { capabilities = capabilities }
+require'lspconfig'.pyright.setup { capabilities = capabilities }
+require'lspconfig'.eslint.setup { capabilities = capabilities }
 require'lspconfig'.intelephense.setup { capabilities = capabilities }
-
 
 -- WhichKey keybinds setup
 -- wk.register({key1 = {name, more_keys = {cmd, help}}}, predix_key)

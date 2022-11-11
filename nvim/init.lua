@@ -1,9 +1,15 @@
+-- =====================================
+-- GLOBAL VARIABLES
+-- =====================================
 local g   = vim.g
 local o   = vim.o
-local t = vim.opt
+local t   = vim.opt
 local A   = vim.api
+----------------------------------------
 
--- Encoding
+-- =====================================
+-- GENERAL NVIM CONFIG 
+-- =====================================
 t.encoding = 'utf-8'
 
 -- Spaces and tabs
@@ -15,87 +21,39 @@ t.shiftwidth = 4
 -- Highlight current line
 t.cursorline = true
 
--- Line numbers
+-- Line numbers (Numeros relativos a tu posicion, los numeros que aparecen a la izquierda)
 t.number = true
 t.relativenumber = true
 
--- Visual bell
-t.visualbell = true
-
--- Color mode
-t.termguicolors = true
-
--- NetRW Config
+-- NetRW Config ('Navegador de archivos de vim')
 g.netrw_keepdir = 0
 g.netrw_winsize = 20
+----------------------------------------
 
--- MD Languages
-g.markdown_fenced_languages = {'bash=sh', 'javascript', 'json=javascript', 'typescript', 'html', 'rust', 'css', 'cpp', 'python', 'php'}
-
-------------------------------------
--- Source Plugins
+-- =====================================
+-- IMPORTAR EL ARHCHIVO DE PLUGINS 
+-- =====================================
 require('plug')
-------------------------------------
+----------------------------------------
 
--- KEYBINDINGS
-vim.cmd [[packadd packer.nvim]]
-local function map(m, k, v)
-    vim.keymap.set(m, k, v, { silent = true })
-end
 
--- KEY-REMAPS
-map('n', '<F5>', '<Esc>:!python %<CR>')
-
-map('i', '<C-d>', '<Bs>')
-map('i', '<C-h>', '<Left>')
-map('i', '<C-j>', '<Down>')
-map('i', '<C-k>', '<Up>')
-map('i', '<C-l>', '<Right>')
-map('c', '<C-h>', '<Left>')
-map('c', '<C-j>', '<Down>')
-map('c', '<C-k>', '<Up>')
-map('c', '<C-l>', '<Right>')
-map('i', '{<CR>', '{<CR>}<Esc><S-O>')
-map('i', '<S-Tab>', '<Esc><<i')
-map('x', '<Tab>', '>')
-map('x', '<S-Tab>', '<')
-map('x', '"', 'c""<Esc>P')
-map('x', "'", "c''<Esc>P")
-map('x', '(', 'c()<Esc>P')
-map('x', '{', 'c{}<Esc>P')
-map('x', '[', 'c[]<Esc>P')
-map('x', '*', 'c**<Esc>P')
-
-map('i', '<C-b>', '<Esc>:Lexplore<CR>')
-map('n', '<C-b>', '<Esc>:Lexplore<CR>')
-
+-- =====================================
 -- PLUGIN CONFIGS AND INITS
--- ====================================================================
+-- =====================================
+
+----------------------------------------
 -- TOOOOKYYYOOO - "ThePrimeagen"
+----------------------------------------
+
 g.tokynight_transparent_sidebar = true
 g.tokynight_transparent = true
 t.background = "dark"
 vim.cmd("colorscheme tokyonight")
 
--- DON'T FORGET AFTER INSTALL :: TSInstall html/php/etc... + TSEnable autotag !!
-require('nvim-ts-autotag').setup()
 
--- TELESCOPE FINDER AND IT'S KEY-MAPPING
-require('telescope').setup()
-map('n', '<C-f>f', '<Esc>:Telescope find_files <CR>')
-map('n', '<C-f>g', '<Esc>:Telescope live_grep <CR>')
-map('n', '<C-f>b', '<Esc>:Telescope buffers <CR>')
-map('n', '<C-f>h', '<Esc>:Telescope help_tags <CR>')
-
--- Lua line, very nice - "Borat"
-require('lualine').setup{ options = { theme = 'gruvbox' }}
-vim.cmd("set encoding=UTF-8")
-
--- Block commenting
-require('kommentary.config').use_extended_mappings()
-
--- SETUP CMP AUTOCOMPLETE
--- ====================================================================
+----------------------------------------
+-- LuaSnip 
+----------------------------------------
 
 require("luasnip.loaders.from_vscode").lazy_load()
 
@@ -106,12 +64,11 @@ local cmp = require'cmp'
     ['<C-d>'] = cmp.mapping.scroll_docs(-4),
     ['<C-f>'] = cmp.mapping.scroll_docs(4),
     ['<C-e>'] = cmp.mapping.close(),
-    ['<c-y>'] = cmp.mapping.confirm({ 
+    ['<CR>'] = cmp.mapping.confirm({
        behavior = cmp.ConfirmBehavior.Insert,
-       select = true 
+       select = true
    }), --cmp.confirm, 
    }), -- mapping,
-    
    sources = cmp.config.sources({
       { name = 'gh_issues'},
       { name = 'nvim_lsp' },
@@ -119,13 +76,11 @@ local cmp = require'cmp'
       { name = 'luasnip'},
       { name = 'buffer', keyword_length = 3},
       }), --sources
-   
     snippet = ({
       expand = function(args)
-       require'luasnip'.lsp_expand(args.body)
+       luasnip.lsp_expand(args.body)
      end
      }), -- snippet
-
 
     experimental = {
         native_menu = false,
@@ -133,13 +88,30 @@ local cmp = require'cmp'
     }, --experimental
 }) -- setup
 
-local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
-require'lspconfig'.pyright.setup { capabilities = capabilities }
-require'lspconfig'.eslint.setup { capabilities = capabilities }
-require'lspconfig'.intelephense.setup { capabilities = capabilities }
 
--- WhichKey keybinds setup
--- wk.register({key1 = {name, more_keys = {cmd, help}}}, predix_key)
+----------------------------------------
+-- LSPCONFIG
+----------------------------------------
+
+require'nvim-lsp-installer'.setup {}
+local lspconfig = require('lspconfig')
+
+local function on_attach(client, bufnr)
+	-- set up buffer keymaps, etc
+end
+
+lspconfig.sumneko_lua.setup { on_attach = on_attach }
+lspconfig.html.setup { on_attach = on_attach }
+lspconfig.tsserver.setup { on_attach = on_attach }
+lspconfig.pyright.setup { on_attach = on_attach }
+lspconfig.eslint.setup { on_attach = on_attach }
+lspconfig.intelephense.setup { on_attach = on_attach }
+
+
+----------------------------------------
+-- WhichKey
+----------------------------------------
+
 local wk = require("which-key")
 wk.register({
     t = {
@@ -158,5 +130,4 @@ wk.register({
     }
 }, { prefix = "<leader>" })
 
--- PLUGINS
-
+----------------------------------------

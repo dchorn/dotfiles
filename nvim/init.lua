@@ -223,6 +223,7 @@ lspconfig.sumneko_lua.setup {
 	}
 }
 
+lspconfig.angularls.setup { on_attach = on_attach }
 lspconfig.html.setup { on_attach = on_attach }
 lspconfig.tsserver.setup { on_attach = on_attach }
 lspconfig.pyright.setup { on_attach = on_attach }

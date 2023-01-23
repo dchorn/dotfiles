@@ -55,7 +55,7 @@ return require('packer').startup(function()
   -- LspConfig
     use 'neovim/nvim-lspconfig'
     use 'williamboman/nvim-lsp-installer'
-
+	use { 'github/copilot.vim' }
 
   -- Trouble nvim
 	use {
@@ -81,4 +81,8 @@ return require('packer').startup(function()
         'folke/which-key.nvim',
         config = function() require'which-key'.setup{} end
     }
+
+  -- WakaTime
+	use 'wakatime/vim-wakatime'
+
 end)
